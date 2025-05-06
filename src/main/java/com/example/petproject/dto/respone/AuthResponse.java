@@ -1,20 +1,20 @@
 package com.example.petproject.dto.respone;
 
-public class AuthRespone {
+public class AuthResponse {
     private String name;
-    private String password;
     private String email;
     private String fullname;
 
-    public AuthRespone(String name, String email,String password, String fullname) {
+    public AuthResponse(String name, String email, String fullname) {
         this.name = name;
         this.email = email;
-        this.password = password;
         this.fullname = fullname;
     }
 
-    public AuthRespone() {
+    public AuthResponse() {
     }
+
+
 
     public String getName() {
         return name;
@@ -40,11 +40,4 @@ public class AuthRespone {
         this.fullname = fullname;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
