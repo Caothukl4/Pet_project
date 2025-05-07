@@ -5,6 +5,8 @@ import com.example.petproject.dto.request.LoginRequest;
 import com.example.petproject.dto.request.RegisterRequest;
 import com.example.petproject.dto.respone.AuthResponse;
 import com.example.petproject.dto.respone.ProductRespone;
+import com.example.petproject.entity.Product;
+import com.example.petproject.entity.User;
 import com.example.petproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,4 +34,16 @@ public class UserController {
     public Object login(@RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest);
     }
+    @GetMapping(URLConstant.API_FINDALL)
+    public List<User> getAllUsers() {
+        // Gọi phương thức từ service để lấy danh sách người dùng
+        return userService.getAllUsers();
+    }
+
+    @PostMapping(URLConstant.API_BLOCK_USER)
+    public String blockUser(@PathVariable Long userId) {
+        userService.blockUser(userId);
+        return "Đã chặn user id: " + userId;
+    }
+
 }

@@ -1,31 +1,53 @@
 package com.example.petproject.service.impl;
 
-import com.example.petproject.dto.respone.ProductRespone;
+import com.example.petproject.entity.Product;
+import com.example.petproject.repository.ProductRepository;
 import com.example.petproject.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Service  // Annotation để Spring tự động quét bean này
+@Service
 public class ProductServiceImpl implements ProductService {
 
-    @Override
-    public List<ProductRespone> getProducts(String status) {
-        // Mock data
-        List<ProductRespone> products = Arrays.asList(
-                new ProductRespone(1, "Sản phẩm A", 100000, "Đang bán"),
-                new ProductRespone(2, "Sản phẩm B", 200000, "Đang bán"),
-                new ProductRespone(3, "Sản phẩm C", 150000, "Hết hàng")
-        );
+    private final ProductRepository productRepository;
 
-        if (status != null && !status.isEmpty()) {
-            return products.stream()
-                    .filter(p -> p.getStatus().equalsIgnoreCase(status))
-                    .collect(Collectors.toList());
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Override
+    public List<Product> getAllAvailableProducts() {
+        return productRepository.findByStatus("Đang bán");  // Lấy tất cả sản phẩm có `isAvailable` = true
+    }
+
+    @Override
+    public Product addProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product updateProduct(Long productId, Product updatedProduct) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
+        product.setName(updatedProduct.getName());
+        product.setDescription(updatedProduct.getDescription());
+        product.setPrice(updatedProduct.getPrice());
+        product.setStatus(updatedProduct.getStatus());
+        return productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProduct(Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new RuntimeException("Sản phẩm không tồn tại");
         }
-        return products;
+        productRepository.deleteById(productId);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 }
-

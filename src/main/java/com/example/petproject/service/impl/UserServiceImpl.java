@@ -3,32 +3,53 @@ package com.example.petproject.service.impl;
 import com.example.petproject.dto.request.LoginRequest;
 import com.example.petproject.dto.request.RegisterRequest;
 import com.example.petproject.dto.respone.AuthResponse;
+import com.example.petproject.entity.Product;
+import com.example.petproject.entity.User;
+import com.example.petproject.repository.ProductRepository;
+import com.example.petproject.repository.UserRepository;
 import com.example.petproject.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-// UserServiceImpl.java
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+
+    // Constructor injection (best practice)
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, ProductRepository productRepository) {
+        this.userRepository = userRepository;
+        this.productRepository = productRepository;
+    }
+
     @Override
-    public RegisterRequest register(RegisterRequest registerRequest) {
-        // ✅ Validate dữ liệu đầu vào (ví dụ đơn giản)
-        if (registerRequest.getEmail() == null || registerRequest.getEmail().isEmpty()) {
+    public User register(RegisterRequest request) {
+        if (request.getEmail() == null || request.getEmail().isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
-        if (registerRequest.getName() == null || registerRequest.getName().isEmpty()) {
-            throw new IllegalArgumentException("Name is required");
+        if (request.getPassword() == null || request.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email đã tồn tại!");
         }
 
-        RegisterRequest response = new RegisterRequest();
-        response.setEmail(registerRequest.getEmail());
-        response.setName(registerRequest.getName());
-        return response;
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword()); // TODO: mã hóa sau này
+        user.setName(request.getName());
+        user.setRole("USER");
+        user.setActive(true);
+
+        return userRepository.save(user);
     }
 
     @Override
     public AuthResponse login(LoginRequest loginRequest) {
-        // ✅ Validate dữ liệu
         if (loginRequest.getEmail() == null || loginRequest.getEmail().isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
@@ -36,12 +57,33 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Password is required");
         }
 
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Email hoặc mật khẩu không đúng"));
 
-        AuthResponse authRespone = new AuthResponse();
-        authRespone.setEmail(loginRequest.getEmail());
-        authRespone.setName(loginRequest.getName());
-        authRespone.setFullname(loginRequest.getFullname());
-        return authRespone;
+        if (!user.getPassword().equals(loginRequest.getPassword())) {
+            throw new RuntimeException("Email hoặc mật khẩu không đúng");
+        }
+
+        // Tạo response
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setEmail(user.getEmail());
+        authResponse.setName(user.getName());
+        authResponse.setFullname(user.getName()); // Có thể chỉnh sửa nếu bạn có trường fullname riêng
+
+        return authResponse;
     }
-}
 
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public void blockUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(false);
+        userRepository.save(user);
+    }
+
+
+}
