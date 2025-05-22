@@ -16,6 +16,7 @@ public class URLConstant {
         public static final String API_GET_PRODUCT_CATEGORY = "/api/product/category";
         public static final String API_GET_PRODUCT_NAME = "/api/product/name";
         public static final String API_UPDATE_PRODUCT = "/admin/products/update/{id}";
+        public static final String API_DELETE_PRODUCT = "/admin/products/delete/{id}";
 
         public static final String API_CART_USER = "/api/cart";
         public static final String API_CART_ADD = "/api/cart/{userId}/add";
@@ -30,11 +31,5 @@ public class URLConstant {
         public static final String API_DELETE_ORDER = "/api/orders/delete";
 
 
-
-        public static final String API_FINDALL = "/admin/users";
-        public static final String API_BLOCK_USER = "/admin/users/block/{userId}";
-        public static final String API_ADD_PRODUCT = "/admin/products/add/{productId}";
-        public static final String API_DELETE_PRODUCT = "/admin/products/delete/{id}";
-        public static final String API_PRODUCTS= "/api/products";
 
     }

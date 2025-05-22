@@ -32,36 +32,4 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(URLConstant.API_GET_USER_ID)
-    public ResponseEntity<UserResponse> getUserById(@RequestParam Long id) {
-        UserResponse response = userService.getUserById(id);
-        return ResponseEntity.ok(response);
-    }
-
-
-    @GetMapping(URLConstant.API_GET_USER_EMAIL)
-    public ResponseEntity<UserResponse> getUserByEmail(@RequestParam String email) {
-        UserResponse response = userService.getUserByEmail(email);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping(URLConstant.API_GET_USER)
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
-
-    @PutMapping(URLConstant.API_UPDATE_USER)
-    public ResponseEntity<UserResponse> updateUser(
-            @PathVariable Long id,
-            @RequestBody UserRegistrationRequest request) {
-        UserResponse updatedUser = userService.updateUser(id, request);
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    @DeleteMapping(URLConstant.API_DELETE_USER)
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
-    }
 }
