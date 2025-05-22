@@ -1,6 +1,7 @@
 package com.example.petproject.repository;
 
-import com.example.petproject.entity.User;
+import com.example.petproject.entity.Cart;
+import com.example.petproject.entity.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
-    boolean existsByEmail(String email);
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+    List<CartItem> findByCartId(Long cartId);
+    Optional<CartItem> findByCartIdAndProductId(Long cartId, Long productId);
+    void deleteByCartId(Long cartId);
+    void deleteByCart(Cart cart);
+
 }

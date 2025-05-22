@@ -1,37 +1,55 @@
 package com.example.petproject.controller;
 
 import com.example.petproject.constant.URLConstant;
+import com.example.petproject.dto.request.AddToCartRequest;
+import com.example.petproject.dto.request.CartItemRequest;
+import com.example.petproject.dto.respone.CartItemResponse;
+import com.example.petproject.dto.respone.CartResponse;
 import com.example.petproject.model.Cart;
 import com.example.petproject.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class CartController {
 
-    private final CartService cartService;
     @Autowired
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
+    private CartService cartService;
 
-    @GetMapping(URLConstant.API_CART)
-    public List<Cart> getAllCartItems() {
-        return cartService.getAllCartItems();
+    @PostMapping(URLConstant.API_CART_USER)
+    public ResponseEntity<CartResponse> getCart(@RequestParam Long userId) {
+        return ResponseEntity.ok(cartService.getCart(userId));
     }
 
     @PostMapping(URLConstant.API_CART_ADD)
-    public ResponseEntity<String> addToCart(@RequestBody Cart cart) {
-        cartService.addToCart(cart);
-        return ResponseEntity.ok("Đã thêm sản phẩm vào giỏ hàng");
+    public ResponseEntity<CartItemResponse> addToCart(@PathVariable Long userId,
+                                                      @RequestBody CartItemRequest request) {
+        return ResponseEntity.ok(cartService.addToCart(userId, request));
+    }
+
+    @PutMapping(URLConstant.API_CART_UPDATE)
+    public ResponseEntity<CartItemResponse> updateCartItem(@PathVariable Long userId,
+                                                           @PathVariable Long cartItemId,
+                                                           @RequestParam Integer quantity) {
+        return ResponseEntity.ok(cartService.updateCartItem(userId, cartItemId, quantity));
     }
 
     @DeleteMapping(URLConstant.API_CART_DELETE)
-    public ResponseEntity<String> deleteCartItem(@RequestParam int id) {
-        cartService.deleteCartItem(id);
-        return ResponseEntity.ok("Đã xóa sản phẩm khỏi giỏ hàng");
+    public ResponseEntity<Void> removeFromCart(@PathVariable Long userId,
+                                               @PathVariable Long cartItemId) {
+        cartService.removeFromCart(userId, cartItemId);
+        return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping(URLConstant.API_CART_CLEAR)
+    public ResponseEntity<Void> clearCart(@PathVariable Long userId) {
+        cartService.clearCart(userId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
