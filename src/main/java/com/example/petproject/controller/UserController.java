@@ -8,6 +8,7 @@ import com.example.petproject.dto.respone.AuthResponse;
 import com.example.petproject.dto.respone.UserResponse;
 import com.example.petproject.service.UserService;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +22,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(URLConstant.API_REGISTER)
-    public ResponseEntity<UserResponse> registerUser(@RequestBody UserRegistrationRequest request) {
+    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
         UserResponse response = userService.registerUser(request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(URLConstant.API_LOGIN)
-    public ResponseEntity<UserResponse> loginUser(@RequestBody LoginRequest request) {
+    public ResponseEntity<UserResponse> loginUser(@Valid @RequestBody LoginRequest request) {
         UserResponse response = userService.loginUser(request);
         return ResponseEntity.ok(response);
     }

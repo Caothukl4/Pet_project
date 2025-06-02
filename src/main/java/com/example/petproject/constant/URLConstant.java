@@ -1,6 +1,7 @@
 package com.example.petproject.constant;
 
 public class URLConstant {
+        public static final String API_ADMIN_LOGIN = "/api/admin/login";
         public static final String API_LOGIN = "/api/login";
         public static final String API_REGISTER = "/api/register";
         public static final String API_GET_USER_ID = "/api/user";
